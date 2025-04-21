@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Logs visiteurs</title>
+    <style>
+        body { background: #181a1b; color: #f1f1f1; font-family: Arial, sans-serif; margin: 0; padding: 0; }
+        .container { max-width: 900px; margin: 40px auto; background: #23272a; padding: 30px; border-radius: 10px; box-shadow: 0 2px 16px #000a; }
+        h1 { color: #e53935; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 10px; border-bottom: 1px solid #333; text-align: left; }
+        th { background: #2d333b; }
+        tr:hover { background: #222; }
+        a { color: #90caf9; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Logs des visiteurs</h1>
+        <a href="/">Retour à l'accueil</a>
+        <table>
+            <tr>
+                <th>Date</th>
+                <th>IP</th>
+                <th>User-Agent</th>
+                <th>Langue</th>
+                <th>URL</th>
+            </tr>
+            {% for log in logs %}
+            <tr>
+                <td>{{ log[1] }}</td>
+                <td>{{ log[2] }}</td>
+                <td style="max-width:220px;overflow-x:auto;">{{ log[3] }}</td>
+                <td>{{ log[4] }}</td>
+                <td style="max-width:140px;overflow-x:auto;">{{ log[5] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% if not logs %}
+        <p>Aucune visite enregistrée.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

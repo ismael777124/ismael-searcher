@@ -42,6 +42,19 @@ def home():
         print(f"Erreur SQLite : {e}")
     return render_template('index.html')
 
+@app.route('/logs')
+def show_logs():
+    logs = []
+    try:
+        conn = sqlite3.connect('ismael_searcher.db')
+        c = conn.cursor()
+        c.execute('''SELECT * FROM visites ORDER BY id DESC LIMIT 100''')
+        logs = c.fetchall()
+        conn.close()
+    except Exception as e:
+        print(f"Erreur lors de la lecture des logs : {e}")
+    return render_template('logs.html', logs=logs)
+
 import os
 
 if __name__ == '__main__':
