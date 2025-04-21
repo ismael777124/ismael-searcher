@@ -1,8 +1,9 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for, session
 from datetime import datetime
 import sqlite3
 
 app = Flask(__name__)
+app.secret_key = 'ismael_searcher_secret'  # Nécessaire pour la session
 
 @app.route('/')
 def home():
@@ -42,8 +43,19 @@ def home():
         print(f"Erreur SQLite : {e}")
     return render_template('index.html')
 
-@app.route('/logs')
+@app.route('/logs', methods=['GET', 'POST'])
 def show_logs():
+    PASSWORD = '1.Ism@eL.A'
+    # Si pas connecté, demander le mot de passe
+    if 'logs_auth' not in session:
+        if request.method == 'POST':
+            if request.form.get('password') == PASSWORD:
+                session['logs_auth'] = True
+                return redirect(url_for('show_logs'))
+            else:
+                return render_template('logs_password.html', error=True)
+        return render_template('logs_password.html', error=False)
+    # Si connecté, afficher les logs
     logs = []
     try:
         conn = sqlite3.connect('ismael_searcher.db')
@@ -54,6 +66,11 @@ def show_logs():
     except Exception as e:
         print(f"Erreur lors de la lecture des logs : {e}")
     return render_template('logs.html', logs=logs)
+
+@app.route('/logout_logs')
+def logout_logs():
+    session.pop('logs_auth', None)
+    return redirect(url_for('show_logs'))
 
 import os
 
